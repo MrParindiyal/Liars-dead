@@ -5,14 +5,22 @@ import (
 	"liars-dead/game"
 )
 
-func main(){
-	deck := game.CreateDeck("basic")
-	for i := 0; i < len(deck.Cards); i++ {
-		fmt.Println(i+1, deck.Cards[i].Value)
-	}
-	fmt.Println("---------------------")
+func main() {
+	deck := game.CreateDeck("chaos")
+	// for i := 0; i < len(deck.Cards); i++ {
+	// 	fmt.Println(i+1, deck.Cards[i].Value)
+	// }
+	// fmt.Println("---------------------")
+
 	deck = game.ShuffleDeck(deck)
-	for i := 0; i < len(deck.Cards); i++ {
-		fmt.Println(i+1, deck.Cards[i].Value)
+	// for i := 0; i < len(deck.Cards); i++ {
+	// 	fmt.Println(i+1, deck.Cards[i].Value)
+	// }
+	fmt.Println("---------------------")
+
+	hands := game.DealNHands(deck, 3)
+
+	for _, hand := range hands {
+		fmt.Println(hand.Cards)
 	}
 }

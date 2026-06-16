@@ -1,29 +1,28 @@
-package game;
+package game
 
 import "math/rand/v2"
 
-type Card struct{
-	Value string
+type Card struct {
+	Value     string
 	IsSpecial bool
 }
 
-type Deck struct{
+type Deck struct {
 	Cards []Card
 }
-
 
 func CreateDeck(mode string) Deck {
 	cardTypes := []string{"King", "Queen", "Ace", "Joker", "Devil", "Master", "Chaos"} // for reference
 
 	var StartingDeck Deck
 
-	StartingDeck.Cards = make([]Card, 0, 21) // TODO : make this dynamic 
-	for _, val := range cardTypes[:2]{
+	StartingDeck.Cards = make([]Card, 0, 21) // TODO : make this dynamic
+	for _, val := range cardTypes[:2] {
 		for range 5 { // alternate for i := 0; i < 5; i++ since i was never used.
 			StartingDeck.Cards = append(StartingDeck.Cards, Card{Value: val, IsSpecial: false})
 		}
 	}
-	
+
 	if mode == "basic" {
 		StartingDeck.Cards = append(StartingDeck.Cards, Card{Value: "King", IsSpecial: false})
 		StartingDeck.Cards = append(StartingDeck.Cards, Card{Value: "Queen", IsSpecial: false})
@@ -48,18 +47,40 @@ func CreateDeck(mode string) Deck {
 		StartingDeck.Cards = append(StartingDeck.Cards, Card{Value: "Chaos", IsSpecial: true})
 	}
 
-	return StartingDeck	
+	return StartingDeck
 
 }
 
-func ShuffleDeck(rawDeck Deck) Deck{
+func ShuffleDeck(rawDeck Deck) Deck {
 	// Knuth shuffle implementation for shuffling decks
 
 	cardLen := len(rawDeck.Cards)
-	for i := range cardLen{
-		randindex := rand.IntN(cardLen - i) + i
+	for i := range cardLen {
+		randindex := rand.IntN(cardLen-i) + i
 		rawDeck.Cards[randindex], rawDeck.Cards[i] = rawDeck.Cards[i], rawDeck.Cards[randindex]
 	}
 
 	return rawDeck
+}
+
+func DealNHands(deck Deck, n int, mode string) []Deck {
+	// TODO : add checks for n in main
+
+	sizeOfHand := 5
+	if mode == "chaos" {
+		sizeOfHand = 3
+	}
+	out := []Deck{}
+	lb := 0
+
+	for range sizeOfHand {
+		ub := lb + sizeOfHand
+		hand := Deck{}
+		hand.Cards = make([]Card, sizeOfHand)
+		copy(hand.Cards, deck.Cards[lb:ub])
+		out = append(out, hand)
+		lb = ub
+	}
+
+	return out
 }
