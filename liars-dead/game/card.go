@@ -9,14 +9,14 @@ type Card struct {
 
 type Deck struct {
 	Cards []Card
-	mode string
+	Mode  string
 }
 
 func CreateDeck(mode string) Deck {
 	cardTypes := []string{"King", "Queen", "Ace", "Joker", "Devil", "Master", "Chaos"} // for reference
 
 	var StartingDeck Deck
-	StartingDeck.mode = mode
+	StartingDeck.Mode = mode
 
 	StartingDeck.Cards = make([]Card, 0, 21) // TODO : make this dynamic
 	for _, val := range cardTypes[:2] {
@@ -69,7 +69,7 @@ func DealNHands(deck Deck, n int) []Deck {
 	// TODO : add checks for n in main
 
 	sizeOfHand := 5
-	if deck.mode == "chaos" {
+	if deck.Mode == "chaos" {
 		sizeOfHand = 3
 	}
 	out := []Deck{}
