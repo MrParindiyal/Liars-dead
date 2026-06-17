@@ -19,8 +19,16 @@ func main() {
 	fmt.Println("---------------------")
 
 	hands := game.DealNHands(deck, 3)
+	for x := range 3 {
+		player := game.NewPlayer(fmt.Sprintf("player%d", x), x)
+		player.Hand = hands[x].Cards
 
-	for _, hand := range hands {
-		fmt.Println(hand.Cards)
+		fmt.Println(player.Uid)
+		fmt.Println(player.PlayerId)
+		fmt.Println(player.Name)
+		fmt.Println(player.Hand)
+		fmt.Println(player.Lives)
+		fmt.Println(player.IsSpectator)
+		fmt.Println("===========")
 	}
 }
