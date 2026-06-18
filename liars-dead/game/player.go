@@ -1,22 +1,35 @@
 package game
 
-import "crypto/rand"
+// import (
+// 	"crypto/rand"
+// )
 
 type Player struct {
-	Uid         string
-	PlayerId    int
+	PlayerId    string
+	SeatId      int
 	Name        string
 	Hand        []Card
 	Lives       int
 	IsSpectator bool
 }
 
-func NewPlayer(name string, playerNum int) Player {
-	return Player{
-		Uid:         (rand.Text())[:6],
-		PlayerId:    playerNum,
+func NewPlayer(name string, playerId string) *Player {
+	return &Player{
+		PlayerId:    playerId,
 		Name:        name,
 		Lives:       6,
 		IsSpectator: false,
 	}
+}
+
+func (p *Player) DeductLife() {
+	p.Lives--
+}
+
+func (p *Player) MarkSpectator() {
+	p.IsSpectator = true
+}
+
+func (p *Player) MarkActive() {
+	p.IsSpectator = false
 }
