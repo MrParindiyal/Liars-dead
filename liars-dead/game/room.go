@@ -1,6 +1,8 @@
 package game
 
-// import "crypto/rand"
+import "crypto/rand"
+
+type GameState string
 
 type GameRoom struct {
 	Id                string
@@ -8,12 +10,23 @@ type GameRoom struct {
 	GameMode          string
 	MaxAllowedPlayers int
 	PlayedStack       []Card
+	CurrentTurnSeat   int
+	State             GameState
 	nextSeatId        int
+	leader            string
 }
+
+const (
+	StateLobby     GameState = "lobby"
+	StateCountdown GameState = "countdown"
+	StateInRound   GameState = "in_round"
+	StateRoundEnd  GameState = "round_end"
+	StateGameOver  GameState = "game_over"
+)
 
 func NewGameRoom(mode string, maxPlayers int) *GameRoom {
 	return &GameRoom{
-		// Id: rand.Text()[2:8],  // TODO : how to assign room id?
+		Id:                rand.Text()[2:8],
 		GameMode:          mode,
 		MaxAllowedPlayers: maxPlayers,
 	}
@@ -37,4 +50,15 @@ func (r *GameRoom) ActivePlayers() []*Player {
 		}
 	}
 	return active
+}
+
+func (r *GameRoom) AdvanceTurn() {
+	for _, p := range r.ActivePlayers() {
+		if p.SeatId > r.CurrentTurnSeat {
+			r.CurrentTurnSeat = p.SeatId
+			return
+		}
+	}
+
+	r.CurrentTurnSeat = r.ActivePlayers()[0].SeatId
 }
