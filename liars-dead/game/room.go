@@ -14,6 +14,8 @@ type GameRoom struct {
 	State             GameState
 	nextSeatId        int
 	leader            string
+	TableSubject      string
+	LastPlayedSize    int
 }
 
 const (
