@@ -1,5 +1,7 @@
 package game
 
+import "slices"
+
 // import (
 // 	"crypto/rand"
 // )
@@ -32,4 +34,19 @@ func (p *Player) MarkSpectator() {
 
 func (p *Player) MarkActive() {
 	p.IsSpectator = false
+}
+
+func (p *Player) RemovePlayedCards(indices []int) []Card {
+	var updatedHand []Card
+	var cardsCollected []Card
+	for i, card := range p.Hand {
+		if !slices.Contains(indices, i) {
+			updatedHand = append(updatedHand, card)
+		} else {
+			cardsCollected = append(cardsCollected, card)
+		}
+	}
+
+	p.Hand = updatedHand
+	return cardsCollected
 }
