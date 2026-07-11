@@ -18,6 +18,17 @@ func CreateDeck(mode string) Deck {
 	var StartingDeck Deck
 	StartingDeck.Mode = mode
 
+	if mode == "bluff" {
+		StartingDeck.Cards = make([]Card, 0, 52)
+		standardCardTypes := []string{"King", "Queen", "Ace", "Joker", "10", "9", "8", "7", "6", "5", "4", "3", "2"}
+		for _, val := range standardCardTypes {
+			for range 4 {
+				StartingDeck.Cards = append(StartingDeck.Cards, Card{Value: val, IsSpecial: false})
+			}
+		}
+		return StartingDeck
+	}
+
 	StartingDeck.Cards = make([]Card, 0, 21) // TODO : make this dynamic
 	for _, val := range cardTypes[:2] {
 		for range 5 { // alternate for i := 0; i < 5; i++ since i was never used.
