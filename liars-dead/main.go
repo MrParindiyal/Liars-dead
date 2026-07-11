@@ -12,7 +12,8 @@ func main() {
 	fmt.Println("---------------------")
 
 	hands := game.DealNHands(deck, 6)
-	room := game.NewGameRoom("devil", 4)
+	fmt.Println(hands)
+	room := game.NewGameRoom("chaos", 4)
 	for x := range 6 {
 		playerId := rand.Text()[:7]
 		player := game.NewPlayer(fmt.Sprintf("player%d", x), playerId)
@@ -23,7 +24,7 @@ func main() {
 		fmt.Println(player.Name)
 		fmt.Println(player.Hand)
 		fmt.Println(player.Lives)
-		fmt.Println(player.IsSpectator)
+		fmt.Println(player.State)
 		fmt.Println("===========")
 		room.AddPlayerToTable(player)
 	}
@@ -34,4 +35,17 @@ func main() {
 	fmt.Println(room.Players[3])
 	fmt.Println(room.Players[4])
 	fmt.Println(room.Players[5])
+	fmt.Println(room.GetRoomstats())
+
+	// TODO
+	action := game.Action{
+		ActionType: "play",
+		Payload: map[string]any{
+			"indices": []int{0, 2},
+		},
+	}
+	err := game.ApplyAction(room, room.Players[2], action)
+
+	if err != nil {
+	}
 }
