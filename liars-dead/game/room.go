@@ -1,6 +1,9 @@
 package game
 
-import "crypto/rand"
+import (
+	"crypto/rand"
+	"fmt"
+)
 
 type GameState string
 
@@ -16,6 +19,7 @@ type GameRoom struct {
 	leader            string
 	TableSubject      string
 	LastPlayedSize    int
+	LastPlayedBy      *Player
 }
 
 const (
@@ -47,7 +51,7 @@ func (r *GameRoom) AddPlayerToTable(p *Player) {
 func (r *GameRoom) ActivePlayers() []*Player {
 	var active []*Player
 	for _, p := range r.Players {
-		if !p.IsSpectator {
+		if p.State != Spectator {
 			active = append(active, p)
 		}
 	}
@@ -63,4 +67,9 @@ func (r *GameRoom) AdvanceTurn() {
 	}
 
 	r.CurrentTurnSeat = r.ActivePlayers()[0].SeatId
+}
+
+func (r *GameRoom) GetRoomstats() string {
+	stats := "ID: %s\nMode: %s\nCapacity: %d/%d\nState: %s\nSubject: %s\nLastPlayedSize: %d"
+	return fmt.Sprintf(stats, r.Id, r.GameMode, len(r.Players), r.MaxAllowedPlayers, r.State, r.TableSubject, r.LastPlayedSize)
 }
