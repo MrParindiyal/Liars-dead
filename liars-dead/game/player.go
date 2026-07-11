@@ -2,25 +2,30 @@ package game
 
 import "slices"
 
-// import (
-// 	"crypto/rand"
-// )
+type PlayerState string
 
 type Player struct {
-	PlayerId    string
-	SeatId      int
-	Name        string
-	Hand        []Card
-	Lives       int
-	IsSpectator bool
+	PlayerId string
+	SeatId   int
+	Name     string
+	Hand     []Card
+	Lives    int
+	State    PlayerState
 }
+
+const (
+	Spectator    PlayerState = "spectator"
+	LobbyWaiting PlayerState = "waiting"
+	LobbyReady   PlayerState = "ready"
+	InGame       PlayerState = "playing"
+)
 
 func NewPlayer(name string, playerId string) *Player {
 	return &Player{
-		PlayerId:    playerId,
-		Name:        name,
-		Lives:       6,
-		IsSpectator: false,
+		PlayerId: playerId,
+		Name:     name,
+		Lives:    6,
+		State:    LobbyWaiting,
 	}
 }
 
@@ -29,11 +34,11 @@ func (p *Player) DeductLife() {
 }
 
 func (p *Player) MarkSpectator() {
-	p.IsSpectator = true
+	p.State = Spectator
 }
 
 func (p *Player) MarkActive() {
-	p.IsSpectator = false
+	p.State = LobbyWaiting
 }
 
 func (p *Player) RemovePlayedCards(indices []int) []Card {
