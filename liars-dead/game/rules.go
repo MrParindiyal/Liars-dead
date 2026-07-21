@@ -13,10 +13,11 @@ func LegalActions(r *GameRoom, p *Player) []Action {
 		if p.State == Spectator {
 			return []Action{{ActionType: "leave"}}
 		}
-		if r.CurrentTurnSeat != p.SeatId && r.LastPlayedBy.SeatId != p.SeatId {
-			return []Action{{ActionType: "leave"}}
+		if r.CurrentTurnSeat != p.SeatId {
+			if r.LastPlayedBy == nil || r.LastPlayedBy.SeatId != p.SeatId {
+				return []Action{{ActionType: "leave"}}
+			}
 		}
-
 		var legal []Action
 		if r.LastPlayedSize > 0 {
 			legal = append(legal, Action{ActionType: "check"})
@@ -38,13 +39,15 @@ func ApplyAction(r *GameRoom, p *Player, a Action) error {
 
 	switch a.ActionType {
 	case "leave":
-		var remainingPlayers []*Player
-		for _, player := range r.Players {
-			if player.PlayerId != p.PlayerId {
-				remainingPlayers = append(remainingPlayers, player)
+		if r.State == StateLobby {
+			var remainingPlayers []*Player
+			for _, player := range r.Players {
+				if player.PlayerId != p.PlayerId {
+					remainingPlayers = append(remainingPlayers, player)
+				}
 			}
+			r.Players = remainingPlayers
 		}
-		r.Players = remainingPlayers
 		p.State = Spectator
 
 	case "ready":
@@ -91,7 +94,7 @@ func ApplyAction(r *GameRoom, p *Player, a Action) error {
 						}
 					} else if card.Value == "Chaos" {
 						for _, player := range r.Players {
-							playerTarget := a.Payload[strconv.Itoa(player.SeatId)]
+							playerTarget := a.Payload[strconv.Itoa(player.SeatId)].(int)
 							for _, target := range r.Players {
 								if target.SeatId == playerTarget {
 									target.DeductLife()
@@ -111,5 +114,5 @@ func ApplyAction(r *GameRoom, p *Player, a Action) error {
 		r.LastPlayedBy = p
 	}
 
-	return nil // TODO : apply rules to player actions
+	return nil
 }
